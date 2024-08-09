@@ -2,11 +2,11 @@ import sys
 
 import structlog
 
-import reichlab_python_template
+import standardize_repo_settings
 
 
 def add_custom_info(logger, method_name, event_dict):
-    event_dict["version"] = reichlab_python_template.__version__
+    event_dict["version"] = standardize_repo_settings.__version__
     return event_dict
 
 

@@ -1,40 +1,12 @@
-# reichlab-python-template
+# Standardize Repo Settings
 
-[REPLACE WITH A DESCRIPTION OF YOUR PROJECT]
+Tools to standardize repository settings in a specific GitHub organization.
 
-A Python template for Reich Lab projects.
+For the Reich Lab repos, we've decided to:
 
-This repo contains a Python package with minimal functionality. It serves as a starting point for new projects (it can be selected as the template when creating a new repo in the Reich Lab org).
-
-There as some opinionated choices here (explained below) which people should override as needed. The main goal is to have a consistent starting point to get up and running with a new Python code base.
-
-## Getting started
-
-[REMOVE THIS SECTION AFTER FOLLOWING THE INSTRUCTIONS BELOW]
-
-If you're using this repo as a template for a new project, make the following changes:
-
-1. Replace all instances of `reichlab-python-template` with the name of your repo/project.
-
-2. Replace all instances of `reichlab_python_template` with the name of your module (remember that Python module names cannot contain hyphens).
-
-3. Update [`pyproject.toml`](pyproject.toml). This file is required and will describe several aspects of your project. `pyproject.toml` replaces `setup.py` and is described in detail on [Python's packaging website](https://packaging.python.org/en/latest/guides/writing-pyproject-toml/).
-
-4. Follow the _Setup for local development_ instructions below to ensure that everything works as expected.
-
-
-## Installing and running the package (no development)
-
-To install this package via pip:
-
-```bash
-pip install git+[GITHUB LINK TO YOUR REPO]
-```
-
-To run it:
-```bash
-reichlab_python_template
-```
+* Disallow direct pushes to the main branch
+* Allow repo write access to all members of the Reich Lab organization
+* Require code reviews before merging to the main branch
 
 ## Setup for local development
 
@@ -56,7 +28,7 @@ Developers will be using a Python virtual environment that:
 2. Change to the repo's root directory:
 
     ```bash
-    cd reichlab-python-template
+    cd standardize-repo-settings
     ```
 
 3. Make sure the correct version of Python is currently active, and create a Python virtual environment:
@@ -131,20 +103,3 @@ To add a dependency to the project:
     # alternately, you can use uv to install the dependencies: it is faster and has a
     # a handy sync option that will cleanup unused dependencies
     uv pip sync requirements/requirements-dev.txt
-
-## Opinionated notes on Python tooling
-
-[REMOVE THIS SECTION]
-
-The Python ecosystem is overwhelming! Current opinionated preferences, subject to change:
-
-- To install and manage various versions of Python: [pyenv](https://github.com/pyenv/pyenv) + a local .python-version file
-- To install Python packages that are available from anywhere on the machine, regardless of which Python environment is activated: [pipx](https://pipx.pypa.io/stable/)
-- To create and manage Python virtual environments: [venv](https://docs.python.org/3/library/venv.html).
-    - I like having the environment packages right there in the project directory
-    - Everything single third-party tool for managing virtual environments (_e.g._, poetry, PDM, pipenv) does _too much_ and gets in my way
-- To generate requirements files from `pyproject.toml`: ['uv'](https://github.com/astral-sh/uv?tab=readme-ov-file#getting-started). I don't usually recommend things this new, but it's orders of magnitude faster than `pip-compile`.
-- To install dependencies: uv again (again, mostly due to speed; good old pip is another fine option)
-- Logging: [structlog](https://www.structlog.org/en/stable/). I recently stopped fighting Python's built-in logging module and haven't looked back.
-- Linting and formatting: [ruff](https://github.com/astral-sh/ruff) because it does both and is fast.
-- Pre-commit hooks: [pre-commit](https://pre-commit.com/).
