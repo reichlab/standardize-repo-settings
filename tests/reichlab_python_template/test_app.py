@@ -1,5 +1,5 @@
 from freezegun import freeze_time
-from reichlab_python_template.app import main
+from standardize_repo_settings.app import main
 
 
 @freeze_time("2019-07-13")

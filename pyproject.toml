@@ -1,6 +1,6 @@
 [project]
-name = "reichlab-python-template"
-description = "Python template for Reich Lab projects"
+name = "standardize-repo-settings"
+description = "Standardize GitHub repository settings"
 license = {text = "MIT License"}
 readme = "README.md"
 requires-python = '>=3.10'
@@ -11,33 +11,30 @@ classifiers = [
 dynamic = ["version"]
 
 dependencies = [
+    "freezegun",
     "structlog",
     "rich",
-    "toml"
 ]
 
 [project.optional-dependencies]
 dev = [
-    "coverage",
-    "freezegun",
     "mypy",
     "pre-commit",
     "pytest",
     "ruff",
-    "types-toml",
 ]
 
 [project.entry-points."console_scripts"]
-reichlab_python_template = "reichlab_python_template.app:main"
+standardize_repo_settings = "standardize_repo_settings.app:main"
 
 [build-system]
 # Minimum requirements for the build system to execute.
 requires = ["setuptools", "wheel"]
 
 [tools.setuptools]
-packages = ["reichlab_python_template"]
+packages = ["standardize_repo_settings"]
 
-[tool.reichlab_python_template]
+[tool.standardize_repo_settings]
 # to write json-formatted logs to disk, uncomment the following line specify the file location
 # log_file = "/path/to/log/files/rechlab_python_template.log"
 
@@ -52,4 +49,4 @@ inline-quotes = "double"
 quote-style = "double"
 
 [tool.setuptools.dynamic]
-version = {attr = "reichlab_python_template.__version__"}
+version = {attr = "standardize_repo_settings.__version__"}
