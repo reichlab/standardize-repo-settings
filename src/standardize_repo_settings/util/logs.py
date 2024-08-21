@@ -15,12 +15,6 @@ def setup_logging():
         add_custom_info,
         structlog.processors.TimeStamper(fmt="iso"),
         structlog.processors.add_log_level,
-        structlog.processors.CallsiteParameterAdder(
-            [
-                structlog.processors.CallsiteParameter.FILENAME,
-                structlog.processors.CallsiteParameter.FUNC_NAME,
-            ]
-        ),
     ]
 
     if sys.stderr.isatty():

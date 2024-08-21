@@ -11,9 +11,9 @@ classifiers = [
 dynamic = ["version"]
 
 dependencies = [
-    "freezegun",
-    "structlog",
+    "requests",
     "rich",
+    "structlog",
 ]
 
 [project.optional-dependencies]
@@ -33,10 +33,6 @@ requires = ["setuptools", "wheel"]
 
 [tools.setuptools]
 packages = ["standardize_repo_settings"]
-
-[tool.standardize_repo_settings]
-# to write json-formatted logs to disk, uncomment the following line specify the file location
-# log_file = "/path/to/log/files/rechlab_python_template.log"
 
 [tool.ruff]
 line-length = 120
