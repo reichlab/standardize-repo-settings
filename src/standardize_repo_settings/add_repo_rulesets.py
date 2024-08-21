@@ -13,6 +13,10 @@ from standardize_repo_settings.util.logs import setup_logging
 setup_logging()
 logger = structlog.get_logger()
 
+
+GITHUB_ORG = "reichlab"
+RULESET_TO_APPLY = "reichlab_default_branch_protections.json"
+
 # source: https://docs.google.com/spreadsheets/d/1UaVsqGQ2uyI42t8HWTQjt0MthQJ-o4Yom0-Q2ahBnJc/edit?gid=1230520805#gid=1230520805
 # (any repo with a WILL_BREAK column = FALSE)
 REPO_LIST = [
@@ -135,13 +139,16 @@ def apply_branch_ruleset(org_name: str, branch_ruleset: dict, session: requests.
 
 
 def main():
-    org_name = "reichlab"
+    org_name = GITHUB_ORG
     token = os.getenv("GITHUB_TOKEN")
+    if not token:
+        logger.error("GITHUB_TOKEN environment variable is required")
+        return
 
     session = get_session(token)
 
     mod_path = Path(importlib.util.find_spec("standardize_repo_settings").origin).parent
-    ruleset_path = mod_path / "rulesets" / "reichlab_default_branch_protections.json"
+    ruleset_path = mod_path / "rulesets" / RULESET_TO_APPLY
     branch_ruleset = load_branch_ruleset(str(ruleset_path))
 
     apply_branch_ruleset(org_name, branch_ruleset, session)

@@ -2,18 +2,41 @@
 
 Tools to standardize repository settings in a specific GitHub organization.
 
-For the Reich Lab repos, we've decided to:
+For the Reich Lab repos, we've decided to apply the following settings to the default
+branches (e.g., `main`) of our repos:
 
-* Disallow direct pushes to the main branch
-* Allow repo write access to all members of the Reich Lab organization
-* Require code reviews before merging to the main branch
+* Branch cannot be deleted
+* Disallow direct pushes (must open a pull request instead)
+* Require at least one reviewer approval before merging a pull request
+* Require re-approval when changes are made to a pull request
 
-## Setup for local development
+
+# Usage
+
+## Prerequisites
+
+* Write access to all repos in the reichlab GitHub organization
+* A `GITHUB_TOKEN` environment variable that contains a [GitHub personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)
+
+## Running the code
+
+1. Install this Python package via pip:
+
+    ```bash
+    pip install git+https://github.com/reichlab/standardize-repo-settings.git
+    ```
+
+2. To apply the Reichlab's default branch rulesets to all repos in the Reichlab GitHub organization:
+    ```bash
+    add_default_rulesets
+    ```
+
+# Setup for local development
 
 The steps below are for setting up a local development environment. This process entails more than just installing the package,
 because we need to ensure that all developers have a consistent, reproducible environment.
 
-### Assumptions
+## Assumptions
 
 Developers will be using a Python virtual environment that:
 
@@ -21,7 +44,7 @@ Developers will be using a Python virtual environment that:
 - contains the dependency versions specified in the "lockfile" (in this case [requirements/requirements-dev.txt](requirements/requirements-dev.txt)).
 - contains the package installed in ["editable" mode](https://packaging.python.org/en/latest/guides/distributing-packages-using-setuptools/#working-in-development-mode).
 
-### Setup steps
+## Setup steps
 
 1. Clone this repository
 
@@ -61,12 +84,12 @@ Developers will be using a Python virtual environment that:
     python -m pytest
     ```
 
-## Development workflow
+# Development workflow
 
 Because the package is installed in "editable" mode, you can run the code as though it were a normal Python package, while also
 being able to make changes and see them immediately.
 
-### Updating dependencies
+## Updating dependencies
 
 Prerequisites:
 - [`uv`](https://github.com/astral-sh/uv?tab=readme-ov-file#getting-started)
