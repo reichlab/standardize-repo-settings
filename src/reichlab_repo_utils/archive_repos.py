@@ -3,101 +3,16 @@ import os
 import requests
 import structlog
 
+from reichlab_repo_utils import ARCHIVE_REPO_LIST
 from reichlab_repo_utils.util.logs import setup_logging
+from reichlab_repo_utils.util.repo import get_all_repos
 from reichlab_repo_utils.util.session import get_session
 
 setup_logging()
 logger = structlog.get_logger()
 
-
 GITHUB_ORG = "reichlab"
 RULESET_TO_APPLY = "reichlab_default_branch_protections.json"
-
-# source: https://docs.google.com/spreadsheets/d/1UaVsqGQ2uyI42t8HWTQjt0MthQJ-o4Yom0-Q2ahBnJc/edit?gid=1230520805#gid=1230520805
-# (any repo with candidate_for_archive column = TRUE)
-ARCHIVE_REPO_LIST = [
-    "duck-hub",
-    # "ensemble-comparison",
-    # "Zoltar-Vizualization",
-    # "container-demo-app",
-    # "2017-2018-cdc-flu-contest",
-    # "2018-2019-cdc-flu-contest",
-    # "activemonitr",
-    # "adaptively-weighted-ensemble",
-    # "ALERT",
-    # "annual-predictions-paper",
-    # "ardfa",
-    # "article-disease-pred-with-kcde",
-    # "bayesian_non_parametric",
-    # "casebot",
-    # "cdcfluforecasts",
-    # "cdcfluutils",
-    # "cdcForecastUtils",
-    # "covid-hosp-forecasts-with-cases",
-    # "covid19-ensemble-methods-manuscript",
-    # "covid19-forecast-evals",
-    # "d3-foresight",
-    # "dengue-data-stub",
-    # "dengue-ssr-prediction",
-    # "dengue-thailand-2014-forecasts",
-    # "densitystackr",
-    # "diffport",
-    # "ensemble-size",
-    # "flu-eda",
-    # "flusight-csv-tools",
-    # "Flusight-forecast-data",
-    # "FluSight-package",
-    # "flusight-test",
-    # "flusurv-forecasts-2020-2021",
-    # "forecast-framework-demos",
-    # "forecastTools",
-    # "foresight-visualization-template",
-    # "german-flu-forecasting",
-    # "hubEnsembles",
-    # "kcde",
-    # "ledge",
-    # "lssm",
-    # "make-example",
-    # "mmwr-week",
-    # "mvtnorm-mod-kcde",
-    # "ncov",
-    # "neural-stack",
-    # "nuxt-forecast-viz",
-    # "online-lag-ensemble",
-    # "pdtmvn",
-    # "pkr",
-    # "proper-scores-comparison",
-    # "pylssm",
-    # "reviewMID",
-    # "shiny-predictions",
-    # "ssr-influenza-competition",
-    # "style",
-    # "tracking-ensemble",
-    # "TSIRsim",
-    # "xgboost-mod",
-    # "xgbstack",
-    # "xpull",
-]
-
-
-def get_all_repos(org_name: str, session: requests.Session) -> list[dict]:
-    """
-    Retrieve all repositories from a GitHub organization, handling pagination.
-
-    :param org_name: Name of the GitHub organization
-    :param session: Requests session for interacting with the GitHub API
-    :return: List of repositories
-    """
-    repos = []
-    repos_url = f"https://api.github.com/orgs/{org_name}/repos"
-    while repos_url:
-        response = session.get(repos_url)
-        response.raise_for_status()
-        repos.extend(response.json())
-        repos_url = response.links.get("next", {}).get("url")
-
-    logger.info("Retrieved repositories", org=org_name, repo_count=len(repos))
-    return repos
 
 
 def archive_repo(org_name: str, session: requests.Session):

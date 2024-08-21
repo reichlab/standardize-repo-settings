@@ -6,51 +6,16 @@ from pathlib import Path
 import requests
 import structlog
 
+from reichlab_repo_utils import RULESET_REPO_LIST
 from reichlab_repo_utils.util.logs import setup_logging
+from reichlab_repo_utils.util.repo import get_all_repos
 from reichlab_repo_utils.util.session import get_session
 
 setup_logging()
 logger = structlog.get_logger()
 
-
 GITHUB_ORG = "reichlab"
 RULESET_TO_APPLY = "reichlab_default_branch_protections.json"
-
-# source: https://docs.google.com/spreadsheets/d/1UaVsqGQ2uyI42t8HWTQjt0MthQJ-o4Yom0-Q2ahBnJc/edit?gid=1230520805#gid=1230520805
-# (any repo with a WILL_BREAK column = FALSE)
-RULESET_REPO_LIST = [
-    "reichlab-python-template",
-    "duck-hub",
-    # "container-utils",
-    # "covidData",
-    # "distfromq",
-    # "docs.zoltardata",
-    # "ensemble-comparison",
-    # "flu-hosp-models-2021-2022",
-    # "flusion",
-    # "forecast-repository",
-    # "gbq_operational",
-    # "genomicdata",
-    # "hub-infrastructure-experiments",
-    # "idforecastutils",
-    # "jacques",
-    # "jacques-covid",
-    # "llmtime",
-    # "malaria-serology",
-    # "predictability",
-    # "predtimechart",
-    # "qenspy",
-    # "qensr",
-    # "rclp",
-    # "sarimaTD",
-    # "sarix-covid",
-    # "simplets",
-    # "timeseriesutils",
-    # "variant-nowcast-hub",
-    # "Zoltar-Vizualization",
-    # "zoltpy",
-    # "zoltr",
-]
 
 
 def load_branch_ruleset(filepath: str) -> dict:
@@ -62,24 +27,6 @@ def load_branch_ruleset(filepath: str) -> dict:
     """
     with open(filepath, "r") as file:
         return json.load(file)
-
-
-def get_all_repos(org_name: str, session: requests.Session) -> list[dict]:
-    """
-    Retrieve all repositories from a GitHub organization, handling pagination.
-
-    :param org_name: Name of the GitHub organization
-    :param session: Requests session for interacting with the GitHub API
-    :return: List of repositories
-    """
-    repos = []
-    repos_url = f"https://api.github.com/orgs/{org_name}/repos"
-    while repos_url:
-        response = session.get(repos_url)
-        response.raise_for_status()
-        repos.extend(response.json())
-        repos_url = response.links.get("next", {}).get("url")
-    return repos
 
 
 def apply_branch_ruleset(org_name: str, branch_ruleset: dict, session: requests.Session):
