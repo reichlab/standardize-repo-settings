@@ -13,10 +13,10 @@ mdurl==0.1.2
 pygments==2.18.0
     # via rich
 requests==2.32.3
-    # via standardize-repo-settings (pyproject.toml)
+    # via reichlab-repo-utils (pyproject.toml)
 rich==13.7.1
-    # via standardize-repo-settings (pyproject.toml)
+    # via reichlab-repo-utils (pyproject.toml)
 structlog==24.1.0
-    # via standardize-repo-settings (pyproject.toml)
+    # via reichlab-repo-utils (pyproject.toml)
 urllib3==2.2.2
     # via requests

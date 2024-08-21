@@ -51,7 +51,7 @@ Developers will be using a Python virtual environment that:
 2. Change to the repo's root directory:
 
     ```bash
-    cd standardize-repo-settings
+    cd reichlab-repo-utils
     ```
 
 3. Make sure the correct version of Python is currently active, and create a Python virtual environment:

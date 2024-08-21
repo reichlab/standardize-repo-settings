@@ -3,8 +3,8 @@ import os
 import requests
 import structlog
 
-from standardize_repo_settings.util.logs import setup_logging
-from standardize_repo_settings.util.session import get_session
+from reichlab_repo_utils.util.logs import setup_logging
+from reichlab_repo_utils.util.session import get_session
 
 setup_logging()
 logger = structlog.get_logger()

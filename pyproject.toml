@@ -1,5 +1,5 @@
 [project]
-name = "standardize-repo-settings"
+name = "reichlab-repo-utils"
 description = "Standardize GitHub repository settings"
 license = {text = "MIT License"}
 readme = "README.md"
@@ -25,15 +25,15 @@ dev = [
 ]
 
 [project.entry-points."console_scripts"]
-add_default_rulesets = "standardize_repo_settings.add_repo_rulesets:main"
-archive_repos = "standardize_repo_settings.archive_repos:main"
+add_default_rulesets = "reichlab_repo_utils.add_repo_rulesets:main"
+archive_repos = "reichlab_repo_utils.archive_repos:main"
 
 [build-system]
 # Minimum requirements for the build system to execute.
 requires = ["setuptools", "wheel"]
 
 [tools.setuptools]
-packages = ["standardize_repo_settings"]
+packages = ["reichlab_repo_utils"]
 
 [tool.ruff]
 line-length = 120
@@ -46,4 +46,4 @@ inline-quotes = "double"
 quote-style = "double"
 
 [tool.setuptools.dynamic]
-version = {attr = "standardize_repo_settings.__version__"}
+version = {attr = "reichlab_repo_utils.__version__"}

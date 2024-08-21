@@ -6,8 +6,8 @@ from pathlib import Path
 import requests
 import structlog
 
-from standardize_repo_settings.util.logs import setup_logging
-from standardize_repo_settings.util.session import get_session
+from reichlab_repo_utils.util.logs import setup_logging
+from reichlab_repo_utils.util.session import get_session
 
 setup_logging()
 logger = structlog.get_logger()
@@ -129,7 +129,7 @@ def main():
 
     session = get_session(token)
 
-    mod_path = Path(importlib.util.find_spec("standardize_repo_settings").origin).parent
+    mod_path = Path(importlib.util.find_spec("reichlab_repo_utils").origin).parent
     ruleset_path = mod_path / "rulesets" / RULESET_TO_APPLY
     branch_ruleset = load_branch_ruleset(str(ruleset_path))
 
