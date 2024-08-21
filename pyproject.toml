@@ -26,6 +26,7 @@ dev = [
 
 [project.entry-points."console_scripts"]
 add_default_rulesets = "standardize_repo_settings.add_repo_rulesets:main"
+archive_repos = "standardize_repo_settings.archive_repos:main"
 
 [build-system]
 # Minimum requirements for the build system to execute.

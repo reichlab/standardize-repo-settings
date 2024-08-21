@@ -5,10 +5,9 @@ from pathlib import Path
 
 import requests
 import structlog
-from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.util.retry import Retry  # type: ignore
 
 from standardize_repo_settings.util.logs import setup_logging
+from standardize_repo_settings.util.session import get_session
 
 setup_logging()
 logger = structlog.get_logger()
@@ -19,8 +18,9 @@ RULESET_TO_APPLY = "reichlab_default_branch_protections.json"
 
 # source: https://docs.google.com/spreadsheets/d/1UaVsqGQ2uyI42t8HWTQjt0MthQJ-o4Yom0-Q2ahBnJc/edit?gid=1230520805#gid=1230520805
 # (any repo with a WILL_BREAK column = FALSE)
-REPO_LIST = [
+RULESET_REPO_LIST = [
     "reichlab-python-template",
+    "duck-hub",
     # "container-utils",
     # "covidData",
     # "distfromq",
@@ -51,30 +51,6 @@ REPO_LIST = [
     # "zoltpy",
     # "zoltr",
 ]
-
-
-def get_session(token: str) -> requests.Session:
-    """Return a requests session with retry logic."""
-
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "Accept": "application/vnd.github.v3+json",
-        "X-GitHub-Api-Version": "2022-11-28",
-    }
-    session = requests.Session()
-
-    # attach a urllib3 retry adapter to the requests session
-    # https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html#urllib3.util.retry.Retry
-    retries = Retry(
-        total=5,
-        allowed_methods=frozenset(["GET", "POST"]),
-        backoff_factor=1,
-        status_forcelist=[500, 502, 503, 504],
-    )
-    session.mount("https://", HTTPAdapter(max_retries=retries))
-    session.headers.update(headers)
-
-    return session
 
 
 def load_branch_ruleset(filepath: str) -> dict:
@@ -118,24 +94,30 @@ def apply_branch_ruleset(org_name: str, branch_ruleset: dict, session: requests.
     # Get all repositories in the organization
     repos = get_all_repos(org_name, session)
 
-    for repo in repos:
+    # Only update repos that are on our list and are not already archived
+    repos_to_update = [repo for repo in repos if (repo["name"] in RULESET_REPO_LIST and repo["archived"] is False)]
+
+    update_count = 0
+    for repo in repos_to_update:
         repo_name = repo["name"]
         logger.info(repo_name)
-        if repo_name in REPO_LIST:
-            branch_protection_url = f"https://api.github.com/repos/{org_name}/{repo_name}/rulesets"
+        branch_protection_url = f"https://api.github.com/repos/{org_name}/{repo_name}/rulesets"
 
-            # Apply the branch ruleset
-            response = session.post(branch_protection_url, json=branch_ruleset)
-            if response.ok:
-                logger.info(f"Successfully applied branch ruleset to {repo_name}")
-            elif response.status_code == 422:
-                logger.warning(
-                    "Failed to apply branch ruleset (likely because it already exists)",
-                    repo=repo_name,
-                    response=response.json(),
-                )
-            else:
-                logger.error("Failed to apply branch ruleset", repo=repo_name, response=response.json())
+        # Apply the branch ruleset
+        response = session.post(branch_protection_url, json=branch_ruleset)
+        if response.ok:
+            logger.info(f"Successfully applied branch ruleset to {repo_name}")
+            update_count += 1
+        elif response.status_code == 422:
+            logger.warning(
+                "Failed to apply branch ruleset (likely because it already exists)",
+                repo=repo_name,
+                response=response.json(),
+            )
+        else:
+            logger.error("Failed to apply branch ruleset", repo=repo_name, response=response.json())
+
+    logger.info("All rulesets applied", count=update_count)
 
 
 def main():
