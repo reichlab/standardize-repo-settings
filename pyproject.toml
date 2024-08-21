@@ -27,6 +27,7 @@ dev = [
 [project.entry-points."console_scripts"]
 add_default_rulesets = "reichlab_repo_utils.add_repo_rulesets:main"
 archive_repos = "reichlab_repo_utils.archive_repos:main"
+list_repos = "reichlab_repo_utils.list_repos:main"
 
 [build-system]
 # Minimum requirements for the build system to execute.

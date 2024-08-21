@@ -25,12 +25,13 @@ def archive_repo(org_name: str, session: requests.Session):
 
     # Get all repositories in the organization
     repos = get_all_repos(org_name, session)
+    # Only archive repos that are on our list and are not already archived
+    repos_to_update = [repo for repo in repos if (repo["name"] in ARCHIVE_REPO_LIST and repo["archived"] is False)]
+
+    # payload for updating the repo to archive status
     repo_updates = {
         "archived": True,
     }
-
-    # Only archive repos that are on our list and are not already archived
-    repos_to_update = [repo for repo in repos if (repo["name"] in ARCHIVE_REPO_LIST and repo["archived"] is False)]
 
     update_count = 0
     for repo in repos_to_update:
