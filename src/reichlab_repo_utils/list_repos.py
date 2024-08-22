@@ -1,6 +1,6 @@
 import os
-from collections import namedtuple
 from itertools import zip_longest
+from typing import NamedTuple
 
 import requests
 import structlog
@@ -18,6 +18,14 @@ logger = structlog.get_logger()
 GITHUB_ORG = "reichlab"
 
 
+class OutputColumns(NamedTuple):
+    name: str
+    created_at: str
+    archived: str
+    visibility: str
+    id: str
+
+
 def list_repos(org_name: str, session: requests.Session):
     """
     Archive repositories in the organization.
@@ -27,12 +35,8 @@ def list_repos(org_name: str, session: requests.Session):
     """
 
     # Settings for the output columns when listing repo information
-    output_column_list = ["name", "created_at", "archived", "visibility", "id"]
+    output_column_list = list(OutputColumns._fields)
     output_column_colors = ["green", "magenta", "cyan", "blue", "yellow"]
-    OutputColumns = namedtuple(
-        "OutputColumns",
-        output_column_list,
-    )
 
     # Create the output table and columns
     console = Console()

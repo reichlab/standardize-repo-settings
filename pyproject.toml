@@ -22,6 +22,7 @@ dev = [
     "pre-commit",
     "pytest",
     "ruff",
+    "types-requests",
 ]
 
 [project.entry-points."console_scripts"]
@@ -48,3 +49,10 @@ quote-style = "double"
 
 [tool.setuptools.dynamic]
 version = {attr = "reichlab_repo_utils.__version__"}
+
+[tool.mypy]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["rich.*"]
+follow_imports = "skip"

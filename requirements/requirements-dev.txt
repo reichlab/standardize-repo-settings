@@ -50,9 +50,13 @@ setuptools==72.1.0
     # via nodeenv
 structlog==24.1.0
     # via reichlab-repo-utils (pyproject.toml)
+types-requests==2.32.0.20240712
+    # via reichlab-repo-utils (pyproject.toml)
 typing-extensions==4.11.0
     # via mypy
 urllib3==2.2.2
-    # via requests
+    # via
+    #   requests
+    #   types-requests
 virtualenv==20.26.1
     # via pre-commit
