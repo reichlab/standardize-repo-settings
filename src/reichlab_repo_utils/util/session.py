@@ -19,9 +19,9 @@ def get_session(token: str) -> requests.Session:
     # https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html#urllib3.util.retry.Retry
     retries = Retry(
         total=5,
-        allowed_methods=frozenset(["GET", "POST"]),
+        allowed_methods=frozenset(["GET", "POST", "PATCH"]),
         backoff_factor=1,
-        status_forcelist=[500, 502, 503, 504],
+        status_forcelist=[429, 500, 502, 503, 504],
     )
     session.mount("https://", HTTPAdapter(max_retries=retries))
     session.headers.update(headers)
