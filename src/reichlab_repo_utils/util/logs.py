@@ -2,25 +2,17 @@ import sys
 
 import structlog
 
-import standardize_repo_settings
-
 
 def add_custom_info(logger, method_name, event_dict):
-    event_dict["version"] = standardize_repo_settings.__version__
+    # placeholder for custom log info
     return event_dict
 
 
 def setup_logging():
     shared_processors = [
         add_custom_info,
-        structlog.processors.TimeStamper(fmt="iso"),
+        structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%S"),
         structlog.processors.add_log_level,
-        structlog.processors.CallsiteParameterAdder(
-            [
-                structlog.processors.CallsiteParameter.FILENAME,
-                structlog.processors.CallsiteParameter.FUNC_NAME,
-            ]
-        ),
     ]
 
     if sys.stderr.isatty():

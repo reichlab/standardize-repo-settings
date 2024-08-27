@@ -1,5 +1,5 @@
 [project]
-name = "standardize-repo-settings"
+name = "reichlab-repo-utils"
 description = "Standardize GitHub repository settings"
 license = {text = "MIT License"}
 readme = "README.md"
@@ -11,9 +11,9 @@ classifiers = [
 dynamic = ["version"]
 
 dependencies = [
-    "freezegun",
-    "structlog",
+    "requests",
     "rich",
+    "structlog",
 ]
 
 [project.optional-dependencies]
@@ -22,21 +22,20 @@ dev = [
     "pre-commit",
     "pytest",
     "ruff",
+    "types-requests",
 ]
 
 [project.entry-points."console_scripts"]
-standardize_repo_settings = "standardize_repo_settings.app:main"
+add_default_rulesets = "reichlab_repo_utils.add_repo_rulesets:main"
+archive_repos = "reichlab_repo_utils.archive_repos:main"
+list_repos = "reichlab_repo_utils.list_repos:main"
 
 [build-system]
 # Minimum requirements for the build system to execute.
 requires = ["setuptools", "wheel"]
 
 [tools.setuptools]
-packages = ["standardize_repo_settings"]
-
-[tool.standardize_repo_settings]
-# to write json-formatted logs to disk, uncomment the following line specify the file location
-# log_file = "/path/to/log/files/rechlab_python_template.log"
+packages = ["reichlab_repo_utils"]
 
 [tool.ruff]
 line-length = 120
@@ -49,4 +48,11 @@ inline-quotes = "double"
 quote-style = "double"
 
 [tool.setuptools.dynamic]
-version = {attr = "standardize_repo_settings.__version__"}
+version = {attr = "reichlab_repo_utils.__version__"}
+
+[tool.mypy]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["rich.*"]
+follow_imports = "skip"
