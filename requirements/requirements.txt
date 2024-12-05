@@ -4,12 +4,16 @@ certifi==2024.7.4
     # via requests
 charset-normalizer==3.3.2
     # via requests
+duckdb==1.1.3
+    # via reichlab-repo-utils (pyproject.toml)
 idna==3.7
     # via requests
 markdown-it-py==3.0.0
     # via rich
 mdurl==0.1.2
     # via markdown-it-py
+polars==1.16.0
+    # via reichlab-repo-utils (pyproject.toml)
 pygments==2.18.0
     # via rich
 requests==2.32.3
