@@ -5,6 +5,12 @@ number of lines/rows for each model-output and target data file. It saves the ea
 hub's information in data/hub_stats directory as a parquet file in the form
 {hub_name}.parquet.
 
+Once it has retrieved row counts for all hubs on the list, the script creates
+a .csv file with the combined data in the hub_stats directory.
+The .csv is recreated each time the script is run and will include data from
+all .parquet files in hub_stats (in other words, data from prior script runs
+will be included).
+
 Notes
 -----
 To run this script, you will need a personal GitHub token with read access
@@ -56,8 +62,8 @@ import requests
 # List of Hubverse repos we're collecting stats for       #
 # (commented-out hubs have already been counted & saved)  #
 ###########################################################
-HUB_REPO_LIST = [
-    "cdcepi/FluSight-forecast-hub",
+HUB_REPO_LIST: list[str] = [
+    # "cdcepi/FluSight-forecast-hub",
     # "reichlab/variant-nowcast-hub",
     # "hubverse-org/flusight_hub_archive",
     # "cdphmodeling/wnvca-2024",
@@ -81,8 +87,8 @@ FILE_COUNT = 0
 ###########################################################
 # Actual work starts here                                 #
 ###########################################################
-def main(owner: str, repo: str, data_dir: str = __file__):
-    output_dir = Path(data_dir).parent / "data" / "hub_stats"
+def main(owner: str, repo: str, data_dir: str) -> pl.DataFrame:
+    output_dir = Path(data_dir)
     output_dir.mkdir(exist_ok=True)
 
     # duckdb is a handy way to access parquet file metadata
@@ -96,6 +102,7 @@ def main(owner: str, repo: str, data_dir: str = __file__):
             files = list_files_in_directory(owner, repo, directory)
             if len(files) == 0:
                 continue
+
             count_df = count_rows(con, files)
             if len(count_df) > 0:
                 count_df = count_df.with_columns(
@@ -201,8 +208,26 @@ def list_files_in_directory(owner, repo, directory) -> list[str]:
     return files
 
 
+def write_csv(output_dir: Path) -> Path | None:
+    """Write output of all hub stats .parquet files to .csv."""
+    parquet_files = f"{str(output_dir)}/*.parquet"
+    try:
+        hub_stats = pl.read_parquet(parquet_files)
+        csv_file = output_dir / "hub_stats.csv"
+        hub_stats.write_csv(csv_file)
+    except pl.exceptions.ComputeError:
+        print(f"Cannot create .csv: no parquet files found in {output_dir}")
+        csv_file = None
+
+    return csv_file
+
+
 if __name__ == "__main__":
+    data_dir = Path(__file__).parent / "data" / "hub_stats"
     for repo_name in HUB_REPO_LIST:
         print(f"Getting stats for {repo_name}...")
         owner, repo = repo_name.strip().split("/")
-        main(owner, repo)
+        main(owner, repo, str(data_dir))
+    print("Updating .csv to include data for all hubs...")
+    csv_file = write_csv(data_dir)
+    print(f"Hub stats saved to {csv_file}")
