@@ -5,7 +5,7 @@ number of lines/rows for each model-output and target data file. It saves the ea
 hub's information in data/hub_stats directory as a parquet file in the form
 {hub_name}.parquet.
 
-Once it has retrieved row counts for all hubs on the list, the script creates
+Once it has retrieved row counts for all hubs on the list, the script c reates
 a .csv file with the combined data in the hub_stats directory.
 The .csv is recreated each time the script is run and will include data from
 all .parquet files in hub_stats (in other words, data from prior script runs
@@ -52,7 +52,7 @@ To use this script:
 
 import concurrent.futures
 import os
-from collections import ChainMap
+from collections import defaultdict
 from pathlib import Path
 from urllib.parse import urlsplit
 
@@ -106,7 +106,10 @@ def main(owner: str, repo: str, data_dir: str) -> Path:
             futures = [executor.submit(count_rows, file) for file in files]
 
         all_results = [f.result() for f in futures]
-        all_counts = dict(ChainMap(*all_results))
+        all_counts = defaultdict(int)  # type: ignore
+        for result in all_results:
+            all_counts[result[0]] += result[1]
+
         count_df = pl.DataFrame({"file": list(all_counts.keys()), "row_count": list(all_counts.values())})
 
         if len(count_df) > 0:
@@ -114,15 +117,15 @@ def main(owner: str, repo: str, data_dir: str) -> Path:
                 pl.lit(directory).alias("dir"),
                 pl.lit(f"{owner}/{repo}").alias("repo"),
             )
-            # extract team name from file name (it's actually the model_id, but renaming
-            # it now would require reprocessing a bunch of data)
+            # extract model_id from file name
             count_df = count_df.with_columns(
                 pl.when(pl.col("dir") == "model-output").then(
                     pl.col("file")
                     .str.slice(11)
+                    .str.strip_chars_start("_-")
                     .str.splitn(".", 2)
-                    .struct.rename_fields(["team", "file_type"])
-                    .struct.field("team")
+                    .struct.rename_fields(["model_id", "file_type"])
+                    .struct.field("model_id")
                 )
             )
             repo_line_counts = pl.concat([repo_line_counts, count_df])
@@ -133,16 +136,12 @@ def main(owner: str, repo: str, data_dir: str) -> Path:
     return parquet_file
 
 
-def count_rows(file_url) -> dict[str, int | None]:
+def count_rows(file_url) -> tuple[str, int]:
     """Returns a dataframe with a line count for each file a list."""
-    line_counts = {}
 
     file_path = Path(urlsplit(file_url).path)
     file_name = file_path.name
     file_type = file_path.suffix
-
-    if file_type not in [".parquet", ".csv"]:
-        return dict()
 
     try:
         if file_type == ".csv":
@@ -152,9 +151,9 @@ def count_rows(file_url) -> dict[str, int | None]:
     except Exception as e:
         print(f"Error processing {file_url}")
         print(e)
-        count = None
+        count = 0
     finally:
-        line_counts[file_name] = count
+        line_counts = (file_name, count)
 
     return line_counts
 
@@ -200,7 +199,7 @@ def list_files_in_directory(owner, repo, directory) -> list[str]:
         data = response.json()
 
         for item in data:
-            if item["type"] == "file":
+            if item["type"] == "file" and item["download_url"].endswith((".csv", ".parquet")):
                 files.append(item["download_url"])
             elif item["type"] == "dir":
                 files.extend(list_files_in_directory(owner, repo, item["path"]))
