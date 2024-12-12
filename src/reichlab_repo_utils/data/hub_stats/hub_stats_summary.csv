@@ -1,4 +1,6 @@
 repo,dir,row_count
+HopkinsIDD/rsv-forecast-hub,model-output,807716
+HopkinsIDD/rsv-forecast-hub,target-data,9049650
 cdcepi/FluSight-forecast-hub,model-output,6536090
 cdcepi/FluSight-forecast-hub,target-data,7845
 cdphmodeling/wnvca-2024,model-output,61147

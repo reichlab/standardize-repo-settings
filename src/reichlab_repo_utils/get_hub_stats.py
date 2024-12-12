@@ -72,6 +72,7 @@ HUB_REPO_LIST: list[str] = [
     # "european-modelling-hubs/flu-forecast-hub",
     # "european-modelling-hubs/ari-forecast-hub",
     # "european-modelling-hubs/RespiCompass",
+    "HopkinsIDD/rsv-forecast-hub",
 ]
 ###########################################################
 # A bunch of init stuff lazily stored in global variables #
