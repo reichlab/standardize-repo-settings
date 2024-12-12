@@ -11,6 +11,8 @@ classifiers = [
 dynamic = ["version"]
 
 dependencies = [
+    "duckdb",
+    "polars",
     "requests",
     "rich",
     "structlog",

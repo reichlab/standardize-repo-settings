@@ -1,0 +1,14 @@
+repo,dir,row_count
+HopkinsIDD/rsv-forecast-hub,model-output,807716
+HopkinsIDD/rsv-forecast-hub,target-data,9049650
+cdcepi/FluSight-forecast-hub,model-output,6536090
+cdcepi/FluSight-forecast-hub,target-data,7845
+cdphmodeling/wnvca-2024,model-output,61147
+european-modelling-hubs/RespiCompass,model-output,197586720
+european-modelling-hubs/RespiCompass,target-data,64168
+european-modelling-hubs/ari-forecast-hub,model-output,219024
+european-modelling-hubs/ari-forecast-hub,target-data,262033
+european-modelling-hubs/flu-forecast-hub,model-output,408207
+european-modelling-hubs/flu-forecast-hub,target-data,416786
+hubverse-org/flusight_hub_archive,model-output,29364474
+reichlab/variant-nowcast-hub,model-output,25867968
